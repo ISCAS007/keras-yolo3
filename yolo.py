@@ -17,6 +17,7 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
+from test.iou import checkrule
 
 class YOLO(object):
     _defaults = {
@@ -99,7 +100,7 @@ class YOLO(object):
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
 
-    def detect_image(self, image):
+    def detect_image(self, image, rule=None):
         start = timer()
 
         if self.model_image_size != (None, None):
@@ -145,6 +146,12 @@ class YOLO(object):
             bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
             right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
             print(label, (left, top), (right, bottom))
+            
+            if rule is not None:
+                # eg: rule=['dog',100,200,30,30,0.2] , [type,x_top_left,y_top_left,width,height,possibility]
+                test=[label,left,top,right-left,bottom-top,score]
+                if not checkrule(rule,test):
+                    continue
 
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
@@ -189,7 +196,7 @@ def detect_video(yolo, video_path, output_path=""):
     while True:
         return_value, frame = vid.read()
         image = Image.fromarray(frame)
-        image = yolo.detect_image(image)
+        image = yolo.detect_image(image,rule=['car',250,220,600-250,300-200,0.2])
         result = np.asarray(image)
         curr_time = timer()
         exec_time = curr_time - prev_time
