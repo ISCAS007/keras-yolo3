@@ -17,7 +17,34 @@ from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
-from test.iou import checkrule
+
+def checkrule(rule,test):
+    """
+        return true if rule passed
+        return false if rule not passed, which means overlap with the same type
+        eg: rule=['dog',100,200,30,30,0.2] , [type,x_top_left,y_top_left,width,height,possibility]
+        note: currently rule[5]=0.2 is not used!
+    """
+    if(rule[0]!=test[0]):
+        return True
+
+    rect1=rule[1:5]
+    rect2=test[1:5]
+
+    # convert [x1,y1,w,h] to [x1,y1,x2,y2]
+    rect1[2]+=rect1[0]
+    rect1[3]+=rect1[1]
+    rect2[2]+=rect2[0]
+    rect2[3]+=rect2[1]
+#    print("rect1 is ",rect1)
+#    print("rect2 is ",rect2)
+    w=min(rect1[2],rect2[2])-max(rect1[0],rect2[0])
+    h=min(rect1[3],rect2[3])-max(rect1[1],rect2[1])
+
+    if w<=0 or h <=0:
+        return True
+    else:
+        return False
 
 class YOLO(object):
     _defaults = {
