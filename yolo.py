@@ -176,9 +176,10 @@ class YOLO(object):
             
             if rule is not None:
                 # eg: rule=['dog',100,200,30,30,0.2] , [type,x_top_left,y_top_left,width,height,possibility]
-                test=[label,left,top,right-left,bottom-top,score]
-                if not checkrule(rule,test):
+                test=[predicted_class,left,top,right-left,bottom-top,score]
+                if checkrule(rule,test):
                     continue
+                    
 
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
@@ -223,7 +224,7 @@ def detect_video(yolo, video_path, output_path=""):
     while True:
         return_value, frame = vid.read()
         image = Image.fromarray(frame)
-        image = yolo.detect_image(image,rule=['car',250,220,600-250,300-200,0.2])
+        image = yolo.detect_image(image,rule=['car',250,220,600-250,300-220,0.2])
         result = np.asarray(image)
         curr_time = timer()
         exec_time = curr_time - prev_time

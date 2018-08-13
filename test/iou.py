@@ -75,15 +75,15 @@ if __name__ == '__main__':
     reader = csv.reader(csvfile)
 
     for line in reader:
-        print line
+        print(line)
         line[1]=int(line[1])
         line[2]=int(line[2])
         line[3]=int(line[3])
         line[4]=int(line[4])
         line[5]=float(line[5])
         if(checkrule(rule,line)):
-            print "not overlap"
+            print("not overlap")
         else:
-            print "overlap"
+            print("overlap")
 
     csvfile.close()
