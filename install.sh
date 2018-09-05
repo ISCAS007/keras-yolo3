@@ -1,4 +1,4 @@
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+wget https://mirrors.ustc.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
 sh Miniconda3-latest-Linux-x86_64.sh -b
 echo "export PATH=\$HOME/miniconda/bin:\$PATH" >> ~/.zshrc
 echo "export PATH=\$HOME/miniconda/bin:\$PATH" >> ~/.bashrc
